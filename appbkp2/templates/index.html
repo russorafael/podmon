@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Falco - Sistema de Monitoramento Kubernetes</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar de navegação -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="logo">Falco</h1>
+        <span class="tagline">Monitor K8s</span>
+      </div>
+      
+      <nav class="nav-menu">
+        <button class="tab-button active" data-tab="dashboard">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </button>
+        <button class="tab-button" data-tab="pod-history">
+          <i class="fas fa-history"></i> Histórico de Pods
+        </button>
+        <button class="tab-button" data-tab="node-history">
+          <i class="fas fa-server"></i> Histórico de Nós
+        </button>
+        <button class="tab-button" data-tab="configuration">
+          <i class="fas fa-cog"></i> Configurações
+        </button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="theme-toggle-container">
+          <label class="switch" for="theme-toggle">
+            <span class="theme-label">Modo Escuro</span>
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="version-info">
+          <span>Versão 1.0.0</span>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Conteúdo principal -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-title">
+          <h2 id="current-tab-title">Dashboard</h2>
+        </div>
+        <div class="header-actions">
+          <button id="check-now-btn" class="primary-btn">
+            <i class="fas fa-sync-alt"></i> Verificar Agora
+          </button>
+        </div>
+      </header>
+      
+      <!-- Container de notificações -->
+      <div id="notification-container"></div>
+      
+      <!-- Conteúdo das abas -->
+      <div class="tab-content" id="dashboard">
+        <div class="dashboard-grid">
+          <!-- Cards de estatísticas -->
+          <div class="stats-section">
+            <div class="stats-row">
+              <div class="stat-card">
+                <div class="stat-icon pods-icon">
+                  <i class="fas fa-cube"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Total de Pods</h3>
+                  <p id="total-pods">0</p>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon ready-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Pods Ativos</h3>
+                  <p id="ready-pods">0</p>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon failed-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Pods com Falha</h3>
+                  <p id="failed-pods">0</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="stats-row">
+              <div class="stat-card">
+                <div class="stat-icon nodes-icon">
+                  <i class="fas fa-server"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Total de Nós</h3>
+                  <p id="total-nodes">0</p>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon ready-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Nós Ativos</h3>
+                  <p id="ready-nodes">0</p>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon failed-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Nós com Falha</h3>
+                  <p id="failed-nodes">0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Lista de pods -->
+          <div class="pods-section">
+            <div class="section-header">
+              <h3><i class="fas fa-cube"></i> Pods Monitorados</h3>
+            </div>
+            <div class="section-content" id="pods-list">
+              <p class="loading">Carregando pods...</p>
+            </div>
+          </div>
+          
+          <!-- Lista de nós -->
+          <div class="nodes-section">
+            <div class="section-header">
+              <h3><i class="fas fa-server"></i> Nós do Cluster</h3>
+            </div>
+            <div class="section-content" id="nodes-list">
+              <p class="loading">Carregando nós...</p>
+            </div>
+          </div>
+          
+          <!-- Atividades recentes -->
+          <div class="activities-section">
+            <div class="section-header">
+              <h3><i class="fas fa-clock"></i> Atividades Recentes</h3>
+            </div>
+            <div class="section-content" id="recent-activities">
+              <p class="loading">Carregando atividades...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Aba de histórico de pods -->
+      <div class="tab-content" id="pod-history" style="display: none;">
+        <div class="filters-panel">
+          <div class="filter-group">
+            <label for="pod-filter-namespace">Namespace:</label>
+            <input type="text" id="pod-filter-namespace" placeholder="Filtrar por namespace">
+          </div>
+          
+          <div class="filter-group">
+            <label for="pod-filter-name">Nome do Pod:</label>
+            <input type="text" id="pod-filter-name" placeholder="Filtrar por nome">
+          </div>
+          
+          <div class="filter-group">
+            <label for="pod-filter-status">Status:</label>
+            <select id="pod-filter-status">
+              <option value="">Todos</option>
+              <option value="Running">Running</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+              <option value="Succeeded">Succeeded</option>
+              <option value="Unknown">Unknown</option>
+              <option value="CrashLoopBackOff">CrashLoopBackOff</option>
+              <option value="Error">Error</option>
+              <option value="Removed">Removed</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="pod-filter-event">Evento:</label>
+            <select id="pod-filter-event">
+              <option value="">Todos</option>
+              <option value="new_pod">Novo Pod</option>
+              <option value="pod_removed">Pod Removido</option>
+              <option value="status_change">Mudança de Status</option>
+              <option value="image_change">Mudança de Imagem</option>
+              <option value="check">Verificação</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="pod-filter-start-date">Data Inicial:</label>
+            <input type="date" id="pod-filter-start-date">
+          </div>
+          
+          <div class="filter-group">
+            <label for="pod-filter-end-date">Data Final:</label>
+            <input type="date" id="pod-filter-end-date">
+          </div>
+          
+          <button id="pod-history-filter-btn" class="primary-btn">
+            <i class="fas fa-filter"></i> Filtrar
+          </button>
+        </div>
+        
+        <div id="pod-history-table" class="history-table-container">
+          <p class="loading">Carregando histórico...</p>
+        </div>
+      </div>
+      
+      <!-- Aba de histórico de nós -->
+      <div class="tab-content" id="node-history" style="display: none;">
+        <div class="filters-panel">
+          <div class="filter-group">
+            <label for="node-filter-name">Nome do Nó:</label>
+            <input type="text" id="node-filter-name" placeholder="Filtrar por nome">
+          </div>
+          
+          <div class="filter-group">
+            <label for="node-filter-status">Status:</label>
+            <select id="node-filter-status">
+              <option value="">Todos</option>
+              <option value="Ready">Ready</option>
+              <option value="NotReady">NotReady</option>
+              <option value="Removed">Removed</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="node-filter-event">Evento:</label>
+            <select id="node-filter-event">
+              <option value="">Todos</option>
+              <option value="new_node">Novo Nó</option>
+              <option value="node_removed">Nó Removido</option>
+              <option value="status_change">Mudança de Status</option>
+              <option value="check">Verificação</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="node-filter-start-date">Data Inicial:</label>
+            <input type="date" id="node-filter-start-date">
+          </div>
+          
+          <div class="filter-group">
+            <label for="node-filter-end-date">Data Final:</label>
+            <input type="date" id="node-filter-end-date">
+          </div>
+          
+          <button id="node-history-filter-btn" class="primary-btn">
+            <i class="fas fa-filter"></i> Filtrar
+          </button>
+        </div>
+        
+        <div id="node-history-table" class="history-table-container">
+          <p class="loading">Carregando histórico...</p>
+        </div>
+      </div>
+      
+      <!-- Aba de configurações -->
+      <div class="tab-content" id="configuration" style="display: none;">
+        <form id="config-form" class="config-form">
+          <div class="config-section">
+            <h3><i class="fas fa-envelope"></i> Configurações de E-mail</h3>
+            
+            <div class="form-group">
+              <label class="switch">
+                <input type="checkbox" id="email_enabled" name="email_enabled">
+                <span class="slider round"></span>
+              </label>
+              <label for="email_enabled">Ativar notificações por e-mail</label>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="smtp_server">Servidor SMTP:</label>
+                <input type="text" id="smtp_server" name="smtp_server" placeholder="smtp.example.com">
+              </div>
+              
+              <div class="form-group">
+                <label for="smtp_port">Porta:</label>
+                <input type="number" id="smtp_port" name="smtp_port" placeholder="587">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="smtp_username">Usuário:</label>
+                <input type="text" id="smtp_username" name="smtp_username" placeholder="usuario@example.com">
+              </div>
+              
+              <div class="form-group">
+                <label for="smtp_password">Senha:</label>
+                <input type="password" id="smtp_password" name="smtp_password" placeholder="Senha">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="from_email">E-mail de origem:</label>
+              <input type="email" id="from_email" name="from_email" placeholder="falco@example.com">
+            </div>
+            
+            <div class="form-group">
+              <label for="email_recipients">Destinatários (separados por vírgula):</label>
+              <textarea id="email_recipients" name="email_recipients" placeholder="usuario1@example.com, usuario2@example.com"></textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" id="test-email-btn" class="secondary-btn">
+                <i class="fas fa-paper-plane"></i> Testar E-mail
+              </button>
+            </div>
+          </div>
+          
+          <div class="config-section">
+            <h3><i class="fab fa-whatsapp"></i> Configurações do WhatsApp</h3>
+            
+            <div class="form-group">
+              <label class="switch">
+                <input type="checkbox" id="whatsapp_enabled" name="whatsapp_enabled">
+                <span class="slider round"></span>
+              </label>
+              <label for="whatsapp_enabled">Ativar notificações por WhatsApp</label>
+            </div>
+            
+            <div class="form-group">
+              <label for="whatsapp_api_url">URL da API:</label>
+              <input type="text" id="whatsapp_api_url" name="whatsapp_api_url" placeholder="http://localhost:8000/send">
+            </div>
+            
+            <div class="form-group">
+              <label for="whatsapp_api_token">Token da API:</label>
+              <input type="text" id="whatsapp_api_token" name="whatsapp_api_token" placeholder="Token de acesso">
+            </div>
+            
+            <div class="form-group">
+              <label for="whatsapp_recipients">Números (separados por vírgula):</label>
+              <textarea id="whatsapp_recipients" name="whatsapp_recipients" placeholder="5511999999999, 5511888888888"></textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" id="test-whatsapp-btn" class="secondary-btn">
+                <i class="fas fa-paper-plane"></i> Testar WhatsApp
+              </button>
+            </div>
+          </div>
+          
+          <div class="config-section">
+            <h3><i class="fas fa-cogs"></i> Configurações de Monitoramento</h3>
+            
+            <div class="form-group">
+              <label for="namespaces">Namespaces a monitorar:</label>
+              <select id="namespaces" name="namespaces" multiple>
+                <option value="default">default</option>
+                <option value="kube-system">kube-system</option>
+              </select>
+              <small>Ctrl+clique para selecionar múltiplos namespaces</small>
+            </div>
+            
+            <div class="form-group">
+              <label class="switch">
+                <input type="checkbox" id="monitor_all_namespaces" name="monitor_all_namespaces">
+                <span class="slider round"></span>
+              </label>
+              <label for="monitor_all_namespaces">Monitorar todos os namespaces</label>
+            </div>
+            
+            <div class="form-group">
+              <label class="switch">
+                <input type="checkbox" id="monitor_nodes" name="monitor_nodes">
+                <span class="slider round"></span>
+              </label>
+              <label for="monitor_nodes">Monitorar nós</label>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="check_interval">Intervalo de verificação (minutos):</label>
+                <input type="number" id="check_interval" name="check_interval" min="1" max="60" placeholder="15">
+              </div>
+              
+              <div class="form-group">
+                <label for="history_days">Retenção do histórico (dias):</label>
+                <input type="number" id="history_days" name="history_days" min="1" max="90" placeholder="30">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="alert_hours">Horários de alerta (separados por vírgula):</label>
+              <input type="text" id="alert_hours" name="alert_hours" placeholder="8, 12, 18">
+            </div>
+            
+            <div class="form-group">
+              <label class="switch">
+                <input type="checkbox" id="check_images" name="check_images">
+                <span class="slider round"></span>
+              </label>
+              <label for="check_images">Verificar mudanças de imagem</label>
+            </div>
+            
+            <div class="form-group">
+              <label class="switch">
+                <input type="checkbox" id="check_status" name="check_status">
+                <span class="slider round"></span>
+              </label>
+              <label for="check_status">Verificar mudanças de status</label>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">
+              <i class="fas fa-save"></i> Salvar Configurações
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+  
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
