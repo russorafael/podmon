@@ -1,0 +1,125 @@
+2025-04-14 15:40:50,775 - INFO - Database setup completed successfully
+2025-04-14 15:40:50,775 - ERROR - Error loading configuration: 'Database' object has no attribute 'get_config'
+2025-04-14 15:40:50,776 - INFO - Scheduled automatic cleanup with 30 days retention
+2025-04-14 15:40:50,780 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.244.1.41:5000
+2025-04-14 15:40:50,780 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-14 15:40:51,091 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 15:40:51,107 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 15:40:51,364 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 15:49:46,139 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:46] "GET / HTTP/1.1" 200 -
+2025-04-14 15:49:46,286 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:46] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-04-14 15:49:46,317 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:46] "GET /static/js/script.js HTTP/1.1" 200 -
+2025-04-14 15:49:46,617 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:46] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 15:49:46,661 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:46] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 15:49:47,009 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 15:49:47,050 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 15:49:47,054 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:47] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 15:49:47,082 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 15:49:47,085 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:47] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 15:49:47,684 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 15:49:47,699 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 15:49:47,702 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:47] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 15:49:47,710 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 15:49:47,713 - INFO - 10.244.0.0 - - [14/Apr/2025 15:49:47] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 15:50:00,079 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "GET / HTTP/1.1" 200 -
+2025-04-14 15:50:00,147 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-04-14 15:50:00,148 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2025-04-14 15:50:00,241 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 15:50:00,286 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 15:50:00,601 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 15:50:00,647 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 15:50:00,655 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 15:50:00,739 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 15:50:00,742 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:00] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 15:50:01,089 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 15:50:01,190 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 15:50:01,205 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:01] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 15:50:01,240 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 15:50:01,243 - INFO - 10.244.0.0 - - [14/Apr/2025 15:50:01] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 15:50:51,994 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 15:50:52,012 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 15:50:52,361 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:00:52,840 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:00:52,857 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:00:53,146 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:09:09,488 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:09] "GET / HTTP/1.1" 200 -
+2025-04-14 16:09:09,767 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:09] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-04-14 16:09:09,800 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:09] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2025-04-14 16:09:09,987 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:09] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:09:09,998 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:09] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:09:10,462 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:09:10,503 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:09:10,512 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:10] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:09:10,514 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:09:10,517 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:10] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:09:11,031 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:09:11,069 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:09:11,073 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:11] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:09:11,122 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:09:11,126 - INFO - 10.244.0.0 - - [14/Apr/2025 16:09:11] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:10:47,428 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:47] "GET / HTTP/1.1" 200 -
+2025-04-14 16:10:47,484 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:47] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-04-14 16:10:47,488 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:47] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2025-04-14 16:10:47,629 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:47] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:10:47,638 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:47] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:10:48,036 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:10:48,072 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:10:48,081 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:48] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:10:48,124 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:10:48,126 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:48] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:10:48,506 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:10:48,565 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:10:48,568 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:48] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:10:48,611 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:10:48,617 - INFO - 10.244.0.0 - - [14/Apr/2025 16:10:48] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:10:53,892 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:10:53,909 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:10:54,173 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:43:11,767 - INFO - Database setup completed successfully
+2025-04-14 16:43:11,776 - INFO - Configuration saved successfully
+2025-04-14 16:43:11,777 - INFO - Scheduled automatic cleanup with 30 days retention
+2025-04-14 16:43:11,781 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.244.1.42:5000
+2025-04-14 16:43:11,781 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-14 16:43:12,107 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:43:12,125 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:43:12,411 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:46:29,260 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET / HTTP/1.1" 200 -
+2025-04-14 16:46:29,349 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-04-14 16:46:29,350 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET /static/js/script.js HTTP/1.1" 200 -
+2025-04-14 16:46:29,427 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET /api/config HTTP/1.1" 200 -
+2025-04-14 16:46:29,491 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET /api/config HTTP/1.1" 200 -
+2025-04-14 16:46:29,840 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:46:29,908 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:29] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:46:30,165 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:46:30,213 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:46:30,221 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:30] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:46:30,256 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:46:30,259 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:30] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:46:30,804 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:46:30,850 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:46:30,854 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:30] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:46:30,881 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:46:30,885 - INFO - 10.244.0.0 - - [14/Apr/2025 16:46:30] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:47:14,431 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "GET / HTTP/1.1" 200 -
+2025-04-14 16:47:14,489 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-04-14 16:47:14,491 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2025-04-14 16:47:14,553 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "GET /api/config HTTP/1.1" 200 -
+2025-04-14 16:47:14,584 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "GET /api/config HTTP/1.1" 200 -
+2025-04-14 16:47:14,644 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:47:14,689 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:14] "GET /api/history?days=7 HTTP/1.1" 200 -
+2025-04-14 16:47:15,031 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:47:15,063 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:47:15,070 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:15] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:47:15,156 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:47:15,160 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:15] "GET /api/nodes HTTP/1.1" 200 -
+2025-04-14 16:47:15,501 - ERROR - Error saving pod ports: UNIQUE constraint failed: pod_ports.pod_name, pod_ports.namespace, pod_ports.port_number
+2025-04-14 16:47:15,580 - ERROR - Error getting pods information: 'Database' object has no attribute 'check_recent_image_update'
+2025-04-14 16:47:15,584 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:15] "GET /api/pods HTTP/1.1" 200 -
+2025-04-14 16:47:15,643 - ERROR - Error getting node statistics: 'Database' object has no attribute 'save_node_stats'
+2025-04-14 16:47:15,646 - INFO - 10.244.0.0 - - [14/Apr/2025 16:47:15] "GET /api/nodes HTTP/1.1" 200 -
