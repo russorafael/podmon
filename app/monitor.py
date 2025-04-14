@@ -1,6 +1,12 @@
-# Nome: monitor.py
-# Função: Servidor web e lógica de monitoramento de pods
-# Versão: 1.2.0
+# Name: monitor.py
+# Function: Web server and pod monitoring logic
+# Version: 1.2.0
+# Author: russorafael
+# Date: 2025-04-14 10:38:01
+
+# Current system info
+CURRENT_DATE = "2025-04-14 10:38:01"
+CURRENT_USER = "russorafael"
 
 from flask import Flask, render_template, jsonify, request
 from kubernetes import client, config
@@ -50,10 +56,43 @@ class PodMonitor:
         self.config_file = '/app/config.json'
         self.history_file = '/app/history.json'
         self.config = self.load_config()
-        self.history = self.load_history()
+        self.history = self.load_history()  # Este método estava faltando
         self.last_check = {}
         self.pod_states = {}
         self.setup_cleanup_schedule()
+
+    def load_history(self):
+        """
+        Load monitoring history from file or create default if not exists
+        """
+        default_history = {
+            'status_changes': [],
+            'image_updates': [],
+            'last_cleanup': None
+        }
+
+        try:
+            if os.path.exists(self.history_file):
+                with open(self.history_file, 'r') as f:
+                    return json.load(f)
+            else:
+                # Create default history file if it doesn't exist
+                with open(self.history_file, 'w') as f:
+                    json.dump(default_history, f, indent=4)
+                return default_history
+        except Exception as e:
+            logger.error(f"Error loading history: {e}")
+            return default_history
+
+    def save_history(self):
+        """
+        Save current history to file
+        """
+        try:
+            with open(self.history_file, 'w') as f:
+                json.dump(self.history, f, indent=4)
+        except Exception as e:
+            logger.error(f"Error saving history: {e}")
 
     def load_config(self):
         default_config = {
