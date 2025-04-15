@@ -1,0 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-viewer
+rules:
+- apiGroups: [""]
+  resources: ["pods", "nodes", "namespaces", "services"]  # Add for services
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log", "pods/exec"]  # Add pods/exec para uso de df
+  verbs: ["get", "create"]
+- apiGroups: ["apps"]  # Add for deployments
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: podmon-pod-viewer
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: pod-viewer
+  apiGroup: rbac.authorization.k8s.io
