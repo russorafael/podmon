@@ -1,0 +1,92 @@
+# Nome: dpl-podmon.yaml
+# Função: Configuração do Deployment, Service e PV/PVC para o sistema de monitoramento
+# Versão: 1.0.1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-podmon
+  namespace: monitoring
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  # Removida a storageClassName para evitar conflitos
+  nfs:
+    path: /k8s-volume/old/falco/app
+    server: k8s-nas
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-podmon
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  # Removida a storageClassName para usar o default
+  volumeName: pv-podmon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpl-podmon
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podmon-monitor
+  template:
+    metadata:
+      labels:
+        app: podmon-monitor
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: podmon-monitor
+        image: python:3.9-slim
+        ports:
+        - containerPort: 22
+          name: ssh
+        - containerPort: 5000
+          name: web
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+        command: ["/bin/sh"]
+        args: ["-c", "chmod +x /app/entrypoint.sh && /app/entrypoint.sh"]
+        resources:
+          limits:
+            cpu: "1500m"
+            memory: "1024Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+      volumes:
+      - name: app-volume
+        persistentVolumeClaim:
+          claimName: pvc-podmon
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-podmon
+  namespace: monitoring
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.10.210.216
+  ports:
+  - port: 22
+    targetPort: 22
+    name: ssh
+  - port: 80
+    targetPort: 5000
+    name: web
+  selector:
+    app: podmon-monitor
