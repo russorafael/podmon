@@ -1,0 +1,703 @@
+<!--
+Nome: index.html
+Função: Template principal da interface web
+Versão: 2.0.0
+Autor: russorafael
+Data: 2025-04-14 14:33:05
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PodMon - Kubernetes Monitoring</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>PodMon</h1>
+                <div class="header-actions">
+                    <span class="last-refresh" id="lastRefresh">Last refresh: Just now</span>
+                    <button id="toggleTheme" class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3>Overview</h3>
+                    <ul>
+                        <li>
+                            <a href="#" class="active" data-page="dashboard">
+                                <i class="fas fa-gauge"></i> Dashboard
+                                <span class="update-badge" id="dashboardUpdates">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-page="pods">
+                                <i class="fas fa-cube"></i> Pods
+                                <span class="pod-count" id="totalPods">0</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-page="nodes">
+                                <i class="fas fa-server"></i> Nodes
+                                <span class="node-count" id="totalNodes">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Alerts</h3>
+                    <ul>
+                        <li>
+                            <a href="#" data-page="email-settings">
+                                <i class="fas fa-envelope"></i> Email Settings
+                                <span class="status-indicator" id="emailStatus"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-page="whatsapp-settings">
+                                <i class="fab fa-whatsapp"></i> WhatsApp Settings
+                                <span class="status-indicator" id="whatsappStatus"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-page="sms-settings">
+                                <i class="fas fa-sms"></i> SMS Settings
+                                <span class="status-indicator" id="smsStatus"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Settings</h3>
+                    <ul>
+                        <li>
+                            <a href="#" data-page="monitor-settings">
+                                <i class="fas fa-gear"></i> Monitor Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-page="data-cleanup">
+                                <i class="fas fa-broom"></i> Data Cleanup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="retention-info">
+                    <span>Data available since:</span>
+                    <span id="retentionDate" class="retention-date">Loading...</span>
+                </div>
+                <div class="version-info">
+                    <span>Version 2.0.0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="dashboard">
+                <div class="dashboard-header">
+                    <div class="header-title">
+                        <h2>Dashboard</h2>
+                        <span class="auto-refresh-info">Auto-refresh every 10 minutes</span>
+                    </div>
+                    <div class="header-actions">
+                        <div class="quick-filters">
+                            <select id="quickNamespace" class="filter-select">
+                                <option value="">All Namespaces</option>
+                            </select>
+                            <select id="quickNode" class="filter-select">
+                                <option value="">All Nodes</option>
+                            </select>
+                        </div>
+                        <button id="refreshButton" class="refresh-button" title="Refresh Now">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card clickable" data-page="pods" data-filter="running">
+                        <div class="stat-icon healthy">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Running Pods</h3>
+                            <span class="stat-number" id="runningPods">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card clickable" data-page="pods" data-filter="warning">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Warning Pods</h3>
+                            <span class="stat-number" id="warningPods">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card clickable" data-page="pods" data-filter="failed">
+                        <div class="stat-icon error">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Failed Pods</h3>
+                            <span class="stat-number" id="failedPods">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card clickable" data-page="nodes">
+                        <div class="stat-icon info">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Active Nodes</h3>
+                            <span class="stat-number" id="activeNodes">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <!-- Resource Usage Section -->
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h3>Resource Usage</h3>
+                            <div class="section-actions">
+                                <select id="resourceView" class="filter-select">
+                                    <option value="pods">By Pod</option>
+                                    <option value="nodes">By Node</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="resource-charts">
+                            <div class="chart-container">
+                                <h4>CPU Usage</h4>
+                                <canvas id="cpuChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Memory Usage</h4>
+                                <canvas id="memoryChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Disk Usage</h4>
+                                <canvas id="diskChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+<!-- Adicionar depois dos outros gráficos -->
+<div class="chart-container system-monitor">
+    <h4>System Monitor</h4>
+    <canvas id="systemMonitorChart"></canvas>
+    <div class="chart-legend">
+        <span class="legend-item cpu">
+            <i class="fas fa-microchip"></i> CPU
+        </span>
+        <span class="legend-item memory">
+            <i class="fas fa-memory"></i> Memory
+        </span>
+        <span class="legend-item disk">
+            <i class="fas fa-hdd"></i> Disk
+        </span>
+    </div>
+</div>
+                    <!-- Recent Activity Section -->
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h3>Recent Activity (Last 7 Days)</h3>
+                            <div class="section-tabs">
+                                <button class="tab-button active" data-tab="restarts">
+                                    <i class="fas fa-sync"></i> Restarts
+                                </button>
+                                <button class="tab-button" data-tab="images">
+                                    <i class="fas fa-image"></i> Image Updates
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tab-content active" id="restartsContent">
+                            <div class="activity-list" id="podRestarts">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="tab-content" id="imagesContent">
+                            <div class="activity-list" id="imageUpdates">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pods Page -->
+            <div class="page" id="pods">
+                <div class="page-header">
+                    <div class="header-title">
+                        <h2>Pods</h2>
+                    </div>
+                    <div class="header-filters">
+                        <div class="filter-group">
+                            <select id="namespaceFilter" class="filter-select">
+                                <option value="">All Namespaces</option>
+                            </select>
+                            <select id="nodeFilter" class="filter-select">
+                                <option value="">All Nodes</option>
+                            </select>
+                            <select id="statusFilter" class="filter-select">
+                                <option value="">All Status</option>
+                                <option value="running">Running</option>
+                                <option value="warning">Warning</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                            <select id="typeFilter" class="filter-select">
+                                <option value="">All Types</option>
+                                <option value="local">Local Pods</option>
+                                <option value="new">New Pods</option>
+                                <option value="updated">Updated Images</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="podSearch" placeholder="Search pods...">
+                            </div>
+                            <div class="view-options">
+                                <button class="view-button active" data-view="list">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button class="view-button" data-view="grid">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pods-container">
+                    <div class="pods-list" id="podsList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nodes Page -->
+            <div class="page" id="nodes">
+                <div class="page-header">
+                    <h2>Nodes</h2>
+                </div>
+                <div class="nodes-grid" id="nodesList">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Email Settings Page -->
+            <div class="page" id="email-settings">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2>Email Alert Settings</h2>
+                        <p class="settings-description">Configure email notifications for pod status changes and updates.</p>
+                    </div>
+                    <form id="emailSettingsForm" class="settings-form">
+                        <div class="settings-section">
+                            <h3>Email Server Configuration</h3>
+                            <div class="form-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="emailEnabled">
+                                    Enable Email Alerts
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpServer">SMTP Server</label>
+                                <input type="text" id="smtpServer" class="form-control" placeholder="e.g., smtp.company.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpPort">SMTP Port</label>
+                                <input type="number" id="smtpPort" placeholder="25" min="1" max="65535">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpUsername">Username (Optional)</label>
+                                <input type="text" id="smtpUsername" placeholder="SMTP username">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpPassword">Password (Optional)</label>
+                                <input type="password" id="smtpPassword" placeholder="SMTP password">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Recipients</h3>
+                            <div class="form-group">
+                                <label>Email Recipients</label>
+                                <div class="tag-input">
+                                    <input type="email" id="recipientInput" 
+                                           placeholder="Enter email and press Enter">
+                                    <div class="tags-container" id="emailTags"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Schedule</h3>
+                            <div class="schedule-grid">
+                                <div class="form-group">
+                                    <label>Alert Times</label>
+                                    <div class="time-slots" id="emailTimeSlots">
+                                        <button type="button" class="add-time">
+                                            <i class="fas fa-plus"></i> Add Time
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button primary">Save Changes</button>
+                            <button type="button" class="button secondary" id="testEmail">
+                                Send Test Email
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- WhatsApp Settings Page -->
+            <div class="page" id="whatsapp-settings">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2>WhatsApp Alert Settings</h2>
+                        <p class="settings-description">Configure WhatsApp notifications for pod status changes and updates.</p>
+                    </div>
+                    <form id="whatsappSettingsForm" class="settings-form">
+                        <div class="settings-section">
+                            <h3>WhatsApp API Configuration</h3>
+                            <div class="form-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="whatsappEnabled">
+                                    Enable WhatsApp Alerts
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="apiUrl">API URL</label>
+                                <input type="url" id="apiUrl" placeholder="Enter WhatsApp API URL">
+                            </div>
+                            <div class="form-group">
+                                <label for="apiToken">API Token</label>
+                                <input type="password" id="apiToken" placeholder="Enter API token">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Recipients</h3>
+                            <div class="form-group">
+                                <label>Phone Numbers</label>
+                                <div class="tag-input">
+                                    <input type="tel" id="phoneInput" 
+                                           placeholder="Enter phone number and press Enter">
+                                    <div class="tags-container" id="phoneTags"></div>
+                                </div>
+                                <small class="help-text">Format: +[country code][number]</small>
+                            </div>
+                            </div>
+
+                        <div class="settings-section">
+                            <h3>Schedule</h3>
+                            <div class="schedule-grid">
+                                <div class="form-group">
+                                    <label>Alert Times</label>
+                                    <div class="time-slots" id="whatsappTimeSlots">
+                                        <button type="button" class="add-time">
+                                            <i class="fas fa-plus"></i> Add Time
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button primary">Save Changes</button>
+                            <button type="button" class="button secondary" id="testWhatsApp">
+                                Send Test Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SMS Settings Page -->
+            <div class="page" id="sms-settings">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2>SMS Alert Settings</h2>
+                        <p class="settings-description">Configure SMS notifications for pod status changes and updates.</p>
+                    </div>
+                    <form id="smsSettingsForm" class="settings-form">
+                        <div class="settings-section">
+                            <h3>SMS API Configuration</h3>
+                            <div class="form-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="smsEnabled">
+                                    Enable SMS Alerts
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="smsApiUrl">API URL</label>
+                                <input type="url" id="smsApiUrl" placeholder="Enter SMS API URL">
+                            </div>
+                            <div class="form-group">
+                                <label for="smsApiToken">API Token</label>
+                                <input type="password" id="smsApiToken" placeholder="Enter API token">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Recipients</h3>
+                            <div class="form-group">
+                                <label>Phone Numbers</label>
+                                <div class="tag-input">
+                                    <input type="tel" id="smsPhoneInput" 
+                                           placeholder="Enter phone number and press Enter">
+                                    <div class="tags-container" id="smsPhoneTags"></div>
+                                </div>
+                                <small class="help-text">Format: +[country code][number]</small>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Schedule</h3>
+                            <div class="schedule-grid">
+                                <div class="form-group">
+                                    <label>Alert Times</label>
+                                    <div class="time-slots" id="smsTimeSlots">
+                                        <button type="button" class="add-time">
+                                            <i class="fas fa-plus"></i> Add Time
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button primary">Save Changes</button>
+                            <button type="button" class="button secondary" id="testSms">
+                                Send Test SMS
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Monitor Settings Page -->
+            <div class="page" id="monitor-settings">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2>Monitor Settings</h2>
+                        <p class="settings-description">Configure monitoring parameters and behavior.</p>
+                    </div>
+                    <form id="monitorSettingsForm" class="settings-form">
+                        <div class="settings-section">
+                            <h3>General Settings</h3>
+                            <div class="form-group">
+                                <label for="refreshInterval">Refresh Interval (minutes)</label>
+                                <input type="number" id="refreshInterval" min="1" max="60" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="historyRetention">History Retention (days)</label>
+                                <input type="number" id="historyRetention" min="1" max="90" value="7">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Monitoring Scope</h3>
+                            <div class="form-group">
+                                <label>Namespaces to Monitor</label>
+                                <div class="tag-input">
+                                    <input type="text" id="namespaceInput" placeholder="Add namespace and press Enter">
+                                    <div class="tags-container" id="namespaceTags"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Alert Settings</h3>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="alertStatusChange">
+                                    Alert on Pod Status Changes
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="alertImageUpdate">
+                                    Alert on Image Updates
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button primary">Save Changes</button>
+                            <button type="reset" class="button secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Data Cleanup Page -->
+            <div class="page" id="data-cleanup">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <h2>Data Cleanup Settings</h2>
+                        <p class="settings-description">Configure automatic cleanup of old monitoring data.</p>
+                    </div>
+                    <form id="cleanupSettingsForm" class="settings-form">
+                        <div class="settings-section">
+                            <h3>Retention Settings</h3>
+                            <div class="form-group">
+                                <label for="retentionDays">Data Retention Period (Days)</label>
+                                <input type="number" id="retentionDays" min="1" max="90" value="7">
+                                <small class="help-text">Data older than this will be automatically removed</small>
+                            </div>
+                            <div class="retention-info-box">
+                                <div class="info-item">
+                                    <span class="label">Current Data Range:</span>
+                                    <span class="value" id="dataRange">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Next Cleanup:</span>
+                                    <span class="value" id="nextCleanup">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Storage Used:</span>
+                                    <span class="value" id="storageUsed">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Cleanup Schedule</h3>
+                            <div class="form-group">
+                                <label for="cleanupTime">Daily Cleanup Time</label>
+                                <input type="time" id="cleanupTime" value="00:00">
+                                <small class="help-text">Cleanup will run once per day at this time</small>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Manual Cleanup</h3>
+                            <div class="form-group">
+                                <button type="button" class="button warning" id="runCleanup">
+                                    Run Cleanup Now
+                                </button>
+                                <small class="help-text">This will immediately remove data older than the retention period</small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button primary">Save Changes</button>
+                            <button type="reset" class="button secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="podDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pod Details</h3>
+                <button class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmation Required</h3>
+                <button class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmationMessage"></p>
+                <div class="form-group">
+                    <label for="confirmPassword">Admin Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Enter password to confirm">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmYes" class="button primary">Confirm</button>
+                <button id="confirmNo" class="button secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Slot Modal -->
+    <div class="modal" id="timeSlotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Alert Time</h3>
+                <button class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="alertTime">Time</label>
+                    <input type="time" id="alertTime">
+                </div>
+                <div class="form-group">
+                    <label>Days</label>
+                    <div class="day-selector">
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="mon"> Mon
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="tue"> Tue
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="wed"> Wed
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="thu"> Thu
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="fri"> Fri
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="sat"> Sat
+                        </label>
+                        <label class="day-checkbox">
+                            <input type="checkbox" value="sun"> Sun
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveTimeSlot" class="button primary">Add</button>
+                <button id="cancelTimeSlot" class="button secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
