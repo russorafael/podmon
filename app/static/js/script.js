@@ -1812,4 +1812,156 @@ function updateTheme() {
         elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
     } else {
         document.body.classList.remove('dark-mode');
-        elements.themeToggle.innerHTML = '<i class="fas
+// Continuação da linha 1815
+        elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+}
+
+// Refresh Handling
+function startAutoRefresh() {
+    setInterval(() => {
+        loadDashboardData();
+    }, config.refreshInterval);
+}
+
+function resetAutoRefresh() {
+    clearInterval(window.refreshInterval);
+    startAutoRefresh();
+}
+
+function handleManualRefresh() {
+    loadDashboardData();
+    showNotification('Dashboard atualizado com sucesso', 'success');
+}
+
+function updateLastRefreshTime() {
+    if (!elements.lastRefresh) return;
+    elements.lastRefresh.textContent = `Última atualização: ${new Date().toLocaleTimeString()}`;
+}
+
+// Utility Functions
+function showLoading(show) {
+    // Adicionar classe loading ao corpo do documento
+    if (show) {
+        document.body.classList.add('loading');
+    } else {
+        document.body.classList.remove('loading');
+    }
+}
+
+function showNotification(message, type = 'info') {
+    if (!elements.notificationContainer) return;
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <span class="message">${message}</span>
+        <button class="close-notification">&times;</button>
+    `;
+
+    // Adicionar handler para fechar notificação
+    notification.querySelector('.close-notification').addEventListener('click', () => {
+        notification.remove();
+    });
+
+    // Adicionar ao container
+    elements.notificationContainer.appendChild(notification);
+
+    // Remover automaticamente após 5 segundos
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+function formatTime(date) {
+    return new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' }).format(
+        Math.round((date - new Date()) / (1000 * 60 * 60 * 24)),
+        'day'
+    );
+}
+
+function formatCPU(value) {
+    return `${value.toFixed(2)} Cores`;
+}
+
+function formatMemory(value) {
+    if (value < 1024) return `${value.toFixed(2)} MB`;
+    return `${(value / 1024).toFixed(2)} GB`;
+}
+
+function formatDisk(value) {
+    return `${value.toFixed(2)}%`;
+}
+
+function getPodStatusClass(status) {
+    status = status.toLowerCase();
+    switch (status) {
+        case 'running':
+            return 'status-healthy';
+        case 'warning':
+        case 'pending':
+            return 'status-warning';
+        case 'failed':
+        case 'crashloopbackoff':
+        case 'error':
+            return 'status-error';
+        default:
+            return 'status-unknown';
+    }
+}
+
+function isNewPod(pod) {
+    const createdDate = new Date(pod.created_at);
+    const now = new Date();
+    const diffDays = Math.floor((now - createdDate) / (1000 * 60 * 60 * 24));
+    return diffDays <= config.newPodThreshold;
+}
+
+function parseMemoryValue(memoryString) {
+    const value = parseFloat(memoryString);
+    if (memoryString.includes('Gi')) return value * 1024;
+    if (memoryString.includes('Mi')) return value;
+    return value;
+}
+
+// Inicialização de Charts
+function initializeCharts() {
+    if (!elements.charts.cpu) return;
+
+    // Configurar charts vazios inicialmente
+    ['cpu', 'memory', 'disk'].forEach(type => {
+        const canvas = elements.charts[type];
+        const ctx = canvas.getContext('2d');
+        
+        config.charts[type] = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+}
+
+// Exportar funções para uso global
+window.showPodDetails = showPodDetails;
+window.confirmPodRestart = confirmPodRestart;
+window.exportPodLogs = exportPodLogs;
